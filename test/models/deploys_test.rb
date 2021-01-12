@@ -105,7 +105,7 @@ module Shipit
       deploy = shipit_deploys(:shipit)
       deploy_stack = deploy.stack
 
-      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(1)
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(1)
 
       Shipit::Command.any_instance.expects(:run).twice
         .raises(Shipit::Command::TimedOut, 'Rollback timed out')
@@ -130,10 +130,10 @@ module Shipit
       assert_equal 1, retried_rollback.max_retries
     end
 
-    test "rollbacks does not retry on timeouts if not configured" do
+    test "rollbacks do not retry if not configured" do
       deploy_stack = @deploy.stack
 
-      DeploySpec.any_instance.expects(:retries_on_rollback_timeout).returns(0)
+      DeploySpec.any_instance.expects(:retries_on_rollback).returns(0)
 
       Shipit::Command.any_instance.expects(:run).once
         .raises(Shipit::Command::TimedOut, 'Rollback timed out')
